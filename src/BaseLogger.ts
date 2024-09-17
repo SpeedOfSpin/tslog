@@ -68,6 +68,7 @@ export class BaseLogger<LogObj> {
         mask: settings?.overwrite?.mask,
         toLogObj: settings?.overwrite?.toLogObj,
         addMeta: settings?.overwrite?.addMeta,
+        includeDefaultMetaInAddMeta: settings?.overwrite?.includeDefaultMetaInAddMeta ?? false,
         addPlaceholders: settings?.overwrite?.addPlaceholders,
         formatMeta: settings?.overwrite?.formatMeta,
         formatLogObj: settings?.overwrite?.formatLogObj,
@@ -101,7 +102,21 @@ export class BaseLogger<LogObj> {
       this.settings.overwrite?.toLogObj != null ? this.settings.overwrite?.toLogObj(maskedArgs, thisLogObj) : this._toLogObj(maskedArgs, thisLogObj);
     const logObjWithMeta: LogObj & ILogObjMeta =
       this.settings.overwrite?.addMeta != null
-        ? this.settings.overwrite?.addMeta(logObj, logLevelId, logLevelName)
+        ? this.settings.overwrite?.addMeta(
+            logObj,
+            logLevelId,
+            logLevelName,
+            this.settings.overwrite?.includeDefaultMetaInAddMeta ?? false
+              ? this.runtime.getMeta(
+                  logLevelId,
+                  logLevelName,
+                  this.stackDepthLevel,
+                  this.settings.hideLogPositionForProduction,
+                  this.settings.name,
+                  this.settings.parentNames
+                )
+              : ({} as IMeta)
+          )
         : this._addMetaToLogObj(logObj, logLevelId, logLevelName);
 
     // overwrite no matter what, should work for any type (pretty, json, ...)
@@ -370,7 +385,7 @@ export class BaseLogger<LogObj> {
     // name
     let parentNamesString = this.settings.parentNames?.join(this.settings.prettyErrorParentNamesSeparator);
     parentNamesString = parentNamesString != null && logObjMeta?.name != null ? parentNamesString + this.settings.prettyErrorParentNamesSeparator : undefined;
-    placeholderValues["name"] = logObjMeta?.name != null || parentNamesString != null ? (parentNamesString ?? "") + logObjMeta?.name ?? "" : "";
+    placeholderValues["name"] = logObjMeta?.name != null || parentNamesString != null ? (parentNamesString ?? "") + (logObjMeta?.name ?? "") : "";
     placeholderValues["nameWithDelimiterPrefix"] =
       placeholderValues["name"].length > 0 ? this.settings.prettyErrorLoggerNameDelimiter + placeholderValues["name"] : "";
     placeholderValues["nameWithDelimiterSuffix"] =
@@ -381,5 +396,4 @@ export class BaseLogger<LogObj> {
     }
 
     return formatTemplate(this.settings, template, placeholderValues);
-  }
-}
+  }}

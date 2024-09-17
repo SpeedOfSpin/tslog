@@ -138,7 +138,11 @@ export function prettyFormatErrorObj<LogObj>(error: Error, settings: ISettings<L
 export function transportFormatted<LogObj>(logMetaMarkup: string, logArgs: unknown[], logErrors: string[], settings: ISettings<LogObj>): void {
   const logErrorsStr = (logErrors.length > 0 && logArgs.length > 0 ? "\n" : "") + logErrors.join("\n");
   settings.prettyInspectOptions.colors = settings.stylePrettyLogs;
-  console.log(logMetaMarkup + formatWithOptions(settings.prettyInspectOptions, ...logArgs) + logErrorsStr);
+  if (settings.prettyInspectOptions.expandable) {
+    console.log(logMetaMarkup, ...(logArgs.length ? logArgs : []), logErrorsStr);
+  } else {
+    console.log(logMetaMarkup + formatWithOptions(settings.prettyInspectOptions, ...logArgs) + logErrorsStr);
+  }
 }
 
 export function transportJSON<LogObj>(json: LogObj & ILogObjMeta): void {

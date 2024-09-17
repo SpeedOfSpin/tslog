@@ -37,4 +37,5 @@ export interface InspectOptions {
    */
   compact?: boolean | number | undefined;
   sorted?: boolean | ((a: string, b: string) => number) | undefined;
+  expandable?: boolean;
 }

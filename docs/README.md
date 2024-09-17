@@ -9,11 +9,9 @@
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/fullstack-build)
 [![GitHub stars](https://img.shields.io/github/stars/fullstack-build/tslog.svg?style=social&label=Star)](https://github.com/fullstack-build/tslog)
 
-
 > Powerful, fast and expressive logging for TypeScript and JavaScript
 
 ![tslog pretty output](https://raw.githubusercontent.com/fullstack-build/tslog/master/docs/assets/tslog.png "tslog pretty output in browser and Node.js")
-
 
 ## Highlights
 
@@ -42,10 +40,10 @@ log.silly("I am a silly log.");
 ```
 
 ## [Become a Sponsor](https://github.com/sponsors/fullstack-build)
+
 Donations help me allocate more time for my open source work.
 
 [![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/fullstack-build)
-
 
 ## Install
 
@@ -55,35 +53,37 @@ npm install tslog
 
 In order to run a native ES module in Node.js, you have to do two things:
 
-1) Set `"type": "module"` in `package.json`.
-2) For now, start with `--experimental-specifier-resolution=node`
+1. Set `"type": "module"` in `package.json`.
+2. For now, start with `--experimental-specifier-resolution=node`
 
 Example `package.json`
+
 ```json5
 {
-  "name": "NAME",
-  "version": "1.0.0",
-  "main": "index.js",
+  name: "NAME",
+  version: "1.0.0",
+  main: "index.js",
   // here:
-  "type": "module",
-  "scripts": {
-    "build": "tsc -p .",
+  type: "module",
+  scripts: {
+    build: "tsc -p .",
     // and here:
-    "start": "node --enable-source-maps --experimental-specifier-resolution=node index.js"
+    start: "node --enable-source-maps --experimental-specifier-resolution=node index.js",
   },
-  "dependencies": {
-    "tslog": "^4"
+  dependencies: {
+    tslog: "^4",
   },
-  "devDependencies": {
-    "typescript": "^4"
+  devDependencies: {
+    typescript: "^4",
   },
-  "engines": {
-    "node": ">=16"
-  }
+  engines: {
+    node: ">=16",
+  },
 }
 ```
 
 With this `package.json` you can simply build and run it:
+
 ```bash
 npm run build
 npm start
@@ -92,43 +92,47 @@ npm start
 **Otherwise:**
 
 ESM: Node.js with JavaScript:
+
 ```bash
 node --enable-source-maps --experimental-specifier-resolution=node
 ```
 
 CJS: Node.js with JavaScript:
+
 ```bash
 node --enable-source-maps
 ```
 
 ESM: Node.js with TypeScript and `ts-node`:
+
 ```bash
 node --enable-source-maps --experimental-specifier-resolution=node --no-warnings --loader ts-node/esm
 ```
 
 CJS: Node.js with TypeScript and `ts-node`:
+
 ```bash
 node --enable-source-maps --no-warnings --loader ts-node/cjs
 ```
 
 Browser:
+
 ```html
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-<title>tslog example</title>
-</head>
-<body>
-<h1>Example</h1>
+  <head>
+    <title>tslog example</title>
+  </head>
+  <body>
+    <h1>Example</h1>
 
-<script src="tslog.js"></script>
+    <script src="tslog.js"></script>
 
-<script>
-  const logger = new tslog.Logger();
-  logger.silly("I am a silly log.");
-</script>
-
-</body>
+    <script>
+      const logger = new tslog.Logger();
+      logger.silly("I am a silly log.");
+    </script>
+  </body>
 </html>
 ```
 
@@ -142,7 +146,7 @@ This feature enables `tslog` to reference a correct line number in your TypeScri
   // ...
   compilerOptions: {
     // ...
-    "inlineSourceMap": true,  // <!-- here
+    inlineSourceMap: true, // <!-- here
     // we recommend using a current ES version
     target: "es2020",
   },
@@ -207,8 +211,7 @@ Every incoming log message runs through a number of steps before being displayed
 ### ❗Performance
 
 By default, `tslog` is optimized for the best developer experience and includes some default settings that may impact performance in production environments.
-To ensure optimal performance in production, we recommend modifying these settings, such as `hideLogPositionForProduction`(s. below), as needed.  
-
+To ensure optimal performance in production, we recommend modifying these settings, such as `hideLogPositionForProduction`(s. below), as needed.
 
 ### Default log level
 
@@ -233,9 +236,10 @@ log.fatal(new Error("I am a pretty Error with a stacktrace."));
 
 In addition to the default log level, custom log level can be defined in the same way `tslog` does it under the hood, by extending the `BaseLogger` and utilizing the `log` method.
 `log` method expects the following parameters:
-- logLevelId    - Log level ID e.g. 0
-- logLevelName  - Log level name e.g. silly
-- args          - Multiple log attributes that should be logged.
+
+- logLevelId - Log level ID e.g. 0
+- logLevelName - Log level name e.g. silly
+- args - Multiple log attributes that should be logged.
 
 > **Tip:** Also the generic logging method (log()) returns a _JSON_ representation of the log message (`ILogObject`).
 
@@ -252,10 +256,9 @@ export class CustomLogger<LogObj> extends BaseLogger<LogObj> {
    * @param args  - Multiple log attributes that should be logged.
    * @return LogObject with meta property, when log level is >= minLevel
    */
-  public custom(...args: unknown[]): LogObj & ILogObjMeta | undefined {
+  public custom(...args: unknown[]): (LogObj & ILogObjMeta) | undefined {
     return super.log(8, "CUSTOM", ...args);
   }
-
 }
 ```
 
@@ -266,7 +269,6 @@ It is also possible to overwrite the `LogObj` when creating a child.<br>
 Sub-loggers are a powerful feature when building a modular application and due to its inheritance make it easy to configure the entire application.
 
 Use `getSubLogger()` to create a child logger based on the current instance.
-
 
 **Example:**
 
@@ -279,6 +281,7 @@ firstSubLogger.silly("foo bar 1");
 ```
 
 #### Sub-logger with `LogObj`
+
 You can also overwrite the `LogObj`(s. below), when you create a sub-logger:
 
 ```typescript
@@ -292,35 +295,42 @@ firstSubLogger.silly("foo bar 1");
 ```
 
 ### Settings
+
 `tslog` is highly customizable and pretty much every aspect can be either configured or overwritten.
 A `settings` object is the first parameter passed to the `tslog` constructor:
 
 ```typescript
-const logger = new Logger<ILogObj>({ /* SETTINGS */ }, defaultLogObject);
+const logger = new Logger<ILogObj>(
+  {
+    /* SETTINGS */
+  },
+  defaultLogObject
+);
 ```
 
 ##### Changing settings at runtime
-`settings` is a public property and can also be changed on runtime. 
+
+`settings` is a public property and can also be changed on runtime.
 
 Example on changing `minLevel` on runtime:
 
 ```typescript
-    const logger = new Logger({
-      minLevel: 1
-    });
-    
-    // visible
-    logger.log(1, "level_one", "LOG1");
-    // visible
-    logger.log(2, "level_two", "LOG2");
-    
-    // change minLevel to 2
-    logger.settings.minLevel = 2;
+const logger = new Logger({
+  minLevel: 1,
+});
 
-    // hidden
-    logger.log(1, "level_one", "LOG3");
-    // visible
-    logger.log(2, "level_two", "LOG4");
+// visible
+logger.log(1, "level_one", "LOG1");
+// visible
+logger.log(2, "level_two", "LOG2");
+
+// change minLevel to 2
+logger.settings.minLevel = 2;
+
+// hidden
+logger.log(1, "level_one", "LOG3");
+// visible
+logger.log(2, "level_two", "LOG4");
 ```
 
 #### Type: pretty, json, hidden
@@ -336,15 +346,14 @@ Example on changing `minLevel` on runtime:
 const defaultPrettyLogger = new Logger();
 
 // also pretty output
-const prettyLogger = new Logger({type: "pretty"});
+const prettyLogger = new Logger({ type: "pretty" });
 
 // JSON output
-const jsonLogger = new Logger({type: "json"});
+const jsonLogger = new Logger({ type: "json" });
 
 // hidden output
-const hiddenLogger = new Logger({type: "hidden"});
+const hiddenLogger = new Logger({ type: "hidden" });
 ```
-
 
 #### name
 
@@ -353,11 +362,13 @@ You can find the name of the logger responsible for a log inside the `Meta`-obje
 Names get also inherited to sub-loggers and can be found inside the `Meta`-object `parentNames` as well as printed out with a separator (e.g. `:`) in `pretty` mode.
 
 Simple name example:
+
 ```typescript
 new Logger({ name: "myLogger" });
 ```
 
 Sub-loggers with an inherited name:
+
 ```typescript
 const mainLogger = new Logger({ type: "pretty", name: "MainLogger" });
 mainLogger.silly("foo bar");
@@ -370,6 +381,7 @@ secondSubLogger.silly("foo bar 2");
 ```
 
 Output:
+
 ```bash
 2022-11-17 10:45:47.705 SILLY   [/examples/nodejs/index2.ts:51 MainLogger]    foo bar
 2022-11-17 10:45:47.706 SILLY   [/examples/nodejs/index2.ts:54 MainLogger:FirstSubLogger ]    foo bar 1
@@ -383,7 +395,6 @@ Default severities are:
 `0: silly`, `1: trace`, `2: debug`, `3: info`, `4: warn`, `5: error`, `6: fatal`
 
 ```typescript
-
 const suppressSilly = new Logger({ minLevel: 1 });
 suppressSilly.silly("Will be hidden");
 suppressSilly.trace("Will be visible");
@@ -395,7 +406,6 @@ suppressSilly.trace("Will be visible");
 If you still want to put them into a separated parameter, you can do so by defining the `argumentsArrayName`.
 
 ```typescript
-
 const logger = new Logger({
   type: "json",
   argumentsArrayName: "argumentsArray",
@@ -409,21 +419,21 @@ const logMsg = logger.silly("Test1", "Test2");
 //     }
 //   }
 // }
-
 ```
-
 
 #### hideLogPositionForProduction (default: `false`)
 
-By default, `tslog` gathers and includes the log code position in the meta information of a `logObj` o improve the developer experience. 
-However, this can significantly impact performance and slow down execution times in production. 
+By default, `tslog` gathers and includes the log code position in the meta information of a `logObj` o improve the developer experience.
+However, this can significantly impact performance and slow down execution times in production.
 To improve performance, you can disable this functionality by setting the option `hideLogPositionForProduction` to `true`.
 
 #### Pretty templates and styles (color settings)
+
 Enables you to overwrite the looks of a formatted _"pretty"_ log message by providing a template string.
 Following settings are available for styling:
 
 - **Templates:**
+
   - `prettyLogTemplate`: template string for log messages. Possible placeholders:
     - `{{yyyy}}`: year
     - `{{mm}}`: month
@@ -455,8 +465,10 @@ Following settings are available for styling:
   - `prettyInspectOptions`: <a href="https://nodejs.org/api/util.html#utilinspectobject-options" target="_blank">Available options</a>
 
   ### Customizing template tokens
+
   It's possible to add user defined tokes, by overwriting the `addPlaceholders` in the `settings.overwrite`. this callback allows to add or overwrite tokens in the `placeholderValues`.
   for example, to add the token: `{{custom}}`;
+
   ```javascript
   const logger = new Logger({
     type: "pretty",
@@ -468,9 +480,11 @@ Following settings are available for styling:
     },
   });
   ```
+
   this would yield in the token `{{custom}}` being replaced with `"test"`
 
 - **Styling:**
+
   - `stylePrettyLogs`: defines whether logs should be styled and colorized
   - `prettyLogStyles`: provides colors and styles for different placeholders and can also be dependent on the value (e.g. log level)
     - Level 1: template placeholder (defines a style for a certain template placeholder, s. above, without brackets).
@@ -482,13 +496,13 @@ Following settings are available for styling:
   - `prettyLogTimeZone`: Set timezone of pretty log messages to either `UTC` (default) or `local` (based on your server/browser configuration)
 
 #### Log meta information
+
 `tslog` collects meta information for every log, like runtime, code position etc. The meta information collected depends on the runtime (browser or Node.js) and is accessible through the `LogObj`.
-You can define the property containing this meta information with `metaProperty`, which is "_meta" by default.
+You can define the property containing this meta information with `metaProperty`, which is "\_meta" by default.
 
 #### Pretty templates and styles (color settings)
 
 ```typescript
-
 const logger = new Logger({
   prettyLogTemplate: "{{yyyy}}.{{mm}}.{{dd}} {{hh}}:{{MM}}:{{ss}}:{{ms}}\t{{logLevelName}}\t[{{filePathWithLine}}{{name}}]\t",
   prettyErrorTemplate: "\n{{errorName}} {{errorMessage}}\nerror stack:\n{{errorStack}}",
@@ -518,10 +532,10 @@ const logger = new Logger({
     fileNameWithLine: "white",
   },
 });
-
 ```
 
 #### Masking secrets in logs
+
 One of the most common ways of a password/secret breach is through log files.
 Given the central position of `tslog` as the collecting hub of all application logs, it's only natural to use it as a filter.
 There are multiple ways of masking secrets, before they get exposed:
@@ -532,6 +546,7 @@ There are multiple ways of masking secrets, before they get exposed:
 - `maskValuesRegEx`: For even more flexibility, you can also replace strings and object values with a RegEx.
 
 #### Prefixing logs
+
 Prefix every log message with an array of additional attributes.<br>
 Prefixes propagate to sub-loggers and can help to follow a chain of promises.<br>
 In addition to <a href="https://nodejs.org/api/async_hooks.html#async_hooks_class_asynclocalstorage" target="_blank">`AsyncLocalStorage`</a>, prefixes can help further distinguish different parts of a request.
@@ -562,7 +577,6 @@ grandchildLogger.silly("grandchild1 message");
 // Output:
 // main-prefix parent-prefix child1-prefix grandchild1-prefix grandchild1 message
 ```
-
 
 #### Attach additional transports
 
@@ -607,7 +621,6 @@ logger.attachTransport((logObj) => {
 logger.debug("I am a debug log.");
 logger.info("I am an info log.");
 logger.warn("I am a warn log with a json object:", { foo: "bar" });
-
 ```
 
 ##### Storing logs in a file system with rotating files
@@ -616,6 +629,7 @@ If you want to limit the file size of the stored logs, a good practice is to use
 There is a great library called `rotating-file-stream` solving this problem for us and even adding features like compression, file size limit etc.
 
 1. First you need to install this library:
+
 ```bash
   npm i rotating-file-stream
 ```
@@ -640,7 +654,6 @@ logger.attachTransport((logObj) => {
 logger.debug("I am a debug log.");
 logger.info("I am an info log.");
 logger.warn("I am a warn log with a json object:", { foo: "bar" });
-
 ```
 
 #### Overwriting default behavior
@@ -648,8 +661,9 @@ logger.warn("I am a warn log with a json object:", { foo: "bar" });
 One of the key advantages of `tslog` >= 4 is that you can overwrite pretty much every aspect of the log processing described in <a href="#life_cycle">"Lifecycle of a log message"</a>.
 
 For every log:
+
 ```typescript
-    const logger = new Logger({
+const logger = new Logger({
   overwrite: {
     mask: (args: unknown[]): unknown[] => {
       // mask and return an array of log attributes for further processing
@@ -657,45 +671,83 @@ For every log:
     toLogObj: (args: unknown[], clonesLogObj?: LogObj): unknown => {
       // convert the log attributes to a LogObj and return it
     },
-    addMeta: (logObj: any, logLevelId: number, logLevelName: string) => {
+    addMeta: (logObj: any, logLevelId: number, logLevelName: string, defaultMeta?: IMeta) => {
       // add meta information to the LogObj and return it
-    }
-
+      // defaultMeta is populated with the runtime's default meta if
+      // `settings.includeDefaultMetaInAddMeta` is set to true, otherwise is undefined
+    },
   },
 });
 ```
 
 For `pretty` logs:
+
 ```typescript
-    const logger = new Logger({
-      type: "pretty",
-      overwrite: {
-        formatMeta: (meta?: IMeta) => {
-          // format LogObj meta object to a string and return it
-        },
-        formatLogObj: <LogObj>(maskedArgs: unknown[], settings: ISettings<LogObj>) => {
-            // format LogObj attributes to a string and return it
-        },
-        transportFormatted: (logMetaMarkup: string, logArgs: unknown[], logErrors: string[], settings: unknown) => {
-          // overwrite the default transport for formatted (e.g. pretty) log levels. e.g. replace console with StdOut, write to file etc.
-        },
-      },
-    });
+const logger = new Logger({
+  type: "pretty",
+  overwrite: {
+    formatMeta: (meta?: IMeta) => {
+      // format LogObj meta object to a string and return it
+    },
+    formatLogObj: <LogObj>(maskedArgs: unknown[], settings: ISettings<LogObj>) => {
+      // format LogObj attributes to a string and return it
+    },
+    transportFormatted: (logMetaMarkup: string, logArgs: unknown[], logErrors: string[], settings: unknown) => {
+      // overwrite the default transport for formatted (e.g. pretty) log levels. e.g. replace console with StdOut, write to file etc.
+    },
+  },
+});
 ```
 
 For `JSON` logs (no formatting happens here):
+
 ```typescript
-    const logger = new Logger({
-      type: "json",
-      overwrite: {
-        transportJSON: (logObjWithMeta: any) => {
-          // transport the LogObj to console, StdOut, a file or an external service
-        },
-      },
-    });
+const logger = new Logger({
+  type: "json",
+  overwrite: {
+    transportJSON: (logObjWithMeta: any) => {
+      // transport the LogObj to console, StdOut, a file or an external service
+    },
+  },
+});
+```
+
+#### Adding custom values to `_meta`
+
+In many instances it is desireable to add additional information to the `_meta` property, such as a request/correlation id
+to help group logs from the one request cycle together.
+
+The `addMeta` overwrite method allows you to either extend the base runtime's default meta, or replace it entirely with your
+own meta.
+
+To extend it with your own values, set the `includeDefaultMetaInAddMeta` setting to `true`. Once set to true, the `defaultMeta`
+attribute fo the `addMeta` method will include the runtime's meta that you can extend:
+
+```typescript
+interface IMetaWithRequest extends IMeta {
+  requestId: string;
+}
+
+const logger = new Logger({
+  includeDefaultMetaInAddMeta: true,
+  type: "json",
+  metaProperty: "_meta",
+  overwrite: {
+    addMeta: (logObj: any, logLevelId: number, logLevelName: string, defaultMeta?: IMeta) => {
+      const meta = (defaultMeta || {}) as IMetaWithRequest;
+      meta.requestId = "0000-aaaaa-bbbbb-1111";
+
+      return {
+        ...logObj,
+        _meta: meta,
+      };
+    },
+  },
+});
 ```
 
 ### Defining and accessing `logObj`
+
 As described in <a href="#life_cycle">"Lifecycle of a log message"</a>, every log message goes through some lifecycle steps and becomes an object representation of the log with the name `logObj`.
 A default logObj can be passed to the `tslog` constructor and will be cloned and merged into the log message. This makes `tslog` >= 4 highly configurable and easy to integrate into any 3rd party service.
 The entire `logObj` will be printed out in `JSON` mode and also returned by every log method.
@@ -704,7 +756,7 @@ The entire `logObj` will be printed out in `JSON` mode and also returned by ever
 
 ```typescript
 interface ILogObj {
-    foo: string;
+  foo: string;
 }
 
 const defaultLogObject: ILogObj = {
@@ -737,70 +789,70 @@ const logMsg = logger.info("Test");
 
 ## Backwards compatibility
 
-> **`tslog` follows a semantic release policy.** A major version change indicates breaking changes.<br><br>
-> `tslog >=4` is less limiting when it comes to configuration. There are many use cases (especially when it comes to integration with 3rd party services) that now can be achieved elegantly and were not possible before.
+> **`tslog` follows a semantic release policy.** A major version change indicates breaking changes.<br><br> > `tslog >=4` is less limiting when it comes to configuration. There are many use cases (especially when it comes to integration with 3rd party services) that now can be achieved elegantly and were not possible before.
 
 ### RequestID: Mark a request (e.g. HTTP) call with AsyncLocalStorage and `tslog`
->**Node.js 13.10 introduced a new feature called <a href="https://nodejs.org/api/async_hooks.html#async_hooks_class_asynclocalstorage" target="_blank">AsyncLocalStorage.</a>**<br>
+
+> **Node.js 13.10 introduced a new feature called <a href="https://nodejs.org/api/async_hooks.html#async_hooks_class_asynclocalstorage" target="_blank">AsyncLocalStorage.</a>**<br>
 
 ** Keep track of all subsequent calls and promises originated from a single request (e.g. HTTP).**
 
 In a real world application a call to an API would lead to many logs produced across the entire application.
-When debugging it can be quite handy to be able to group all logs based on a unique identifier, e.g.  `requestId`.
+When debugging it can be quite handy to be able to group all logs based on a unique identifier, e.g. `requestId`.
 
 Some providers (e.g. `Heroku`) already set a `X-Request-ID` header, which we are going to use or fallback to a short ID generated by <a href="https://www.npmjs.com/package/nanoid" target="_blank">`nanoid`</a>.
 
 **In this example every subsequent logger is a sub-logger of the main logger and thus inherits all of its settings making `requestId` available throughout the entire application without any further ado.**
 
 `tslog` works with any API framework (like `Express`, `Koa`, `Hapi` and so on), but in this example we are using `Koa`.
+
 ```typescript
-  import { AsyncLocalStorage } from "async_hooks";
-  import Koa from "koa";
-  import { customAlphabet } from "nanoid";
-  import { Logger } from "tslog";
+import { AsyncLocalStorage } from "async_hooks";
+import Koa from "koa";
+import { customAlphabet } from "nanoid";
+import { Logger } from "tslog";
 
-  interface ILogObj {
-    requestId?: string | (() => string | undefined);
-  }
+interface ILogObj {
+  requestId?: string | (() => string | undefined);
+}
 
-  const asyncLocalStorage: AsyncLocalStorage<{ requestId: string }> = new AsyncLocalStorage();
+const asyncLocalStorage: AsyncLocalStorage<{ requestId: string }> = new AsyncLocalStorage();
 
-  const defaultLogObject: ILogObj = {
-    requestId: () => asyncLocalStorage.getStore()?.requestId,
-  };
+const defaultLogObject: ILogObj = {
+  requestId: () => asyncLocalStorage.getStore()?.requestId,
+};
 
-  const logger = new Logger<ILogObj>({ type: "json" }, defaultLogObject);
-  export { logger };
+const logger = new Logger<ILogObj>({ type: "json" }, defaultLogObject);
+export { logger };
 
-  logger.info("Test log without requestId");
+logger.info("Test log without requestId");
 
-  const koaApp = new Koa();
+const koaApp = new Koa();
 
-  /** START AsyncLocalStorage requestId middleware **/
-  koaApp.use(async (ctx: Koa.Context, next: Koa.Next) => {
-    // use x-request-id or fallback to a nanoid
-    const requestId: string = (ctx.request.headers["x-request-id"] as string) ?? customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 6)();
-    // every other Koa middleware will run within the AsyncLocalStorage context
-    await asyncLocalStorage.run({ requestId }, async () => {
-      return next();
-    });
+/** START AsyncLocalStorage requestId middleware **/
+koaApp.use(async (ctx: Koa.Context, next: Koa.Next) => {
+  // use x-request-id or fallback to a nanoid
+  const requestId: string = (ctx.request.headers["x-request-id"] as string) ?? customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 6)();
+  // every other Koa middleware will run within the AsyncLocalStorage context
+  await asyncLocalStorage.run({ requestId }, async () => {
+    return next();
   });
-  /** END AsyncLocalStorage requestId middleware **/
+});
+/** END AsyncLocalStorage requestId middleware **/
 
-  // example middleware
-  koaApp.use(async (ctx: Koa.Context, next) => {
+// example middleware
+koaApp.use(async (ctx: Koa.Context, next) => {
+  // log request
+  logger.silly({ originalUrl: ctx.originalUrl, status: ctx.response.status, message: ctx.response.message });
 
-    // log request
-    logger.silly({ originalUrl: ctx.originalUrl, status: ctx.response.status, message: ctx.response.message });
+  // also works with a sub-logger
+  const subLogger = logger.getSubLogger();
+  subLogger.info("Log containing requestId"); // <-- will contain a requestId
 
-    // also works with a sub-logger
-    const subLogger = logger.getSubLogger();
-    subLogger.info("Log containing requestId"); // <-- will contain a requestId
+  return await next();
+});
 
-    return await next();
-  });
+koaApp.listen(3000);
 
-  koaApp.listen(3000);
-
-  logger.info("Server running on port 3000");
+logger.info("Server running on port 3000");
 ```
